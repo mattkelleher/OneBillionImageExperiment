@@ -11,7 +11,9 @@ import cv2
 This module is designed to interface with Earthcam cameras and download
 frames via multithreading and save them with their camera IDs and current date-time
 """
-
+def _report_dead_cam(m3u8_target):
+    with open("deadCams.txt", "a") as deadFile:
+        deadFile.write(m3u8_target)
 
 def _get_formatted_est():
     """
@@ -74,6 +76,7 @@ def download_stream_frames(m3u8_target, save_path, num_frames=1, save_img_type="
                     print "||||||" + _get_earthcam_id(m3u8_target) + "||||||"
                 else: # Camera dead
                     print "******" + _get_earthcam_id(m3u8_target) + "******"
+                    _report_dead_cam(m3u8_target)
                 break
     cam.release()
 
@@ -136,16 +139,16 @@ if __name__ == "__main__":
 
     with open("m3u8s.txt") as stream_file:
         
-        EXPERIMENT_END_TIME = time.time() + 60 * 60 * 1 # Run for a full 8 hours
-        MAX_BATCH_ALLOWED_TIME = 60 * 5 # 5 minutes per batch, max
-        FRAMES_PER_CAM_PER_BATCH = 10000
+        EXPERIMENT_END_TIME = time.time() + 60 * 3 # Run for a full 1 hours
+        MAX_BATCH_ALLOWED_TIME = 60 * 1 # 5 minutes per batch, max
+        FRAMES_PER_CAM_PER_BATCH = 15
 
         while time.time() < EXPERIMENT_END_TIME:
             
             CURR_BATCH_START_TIME = time.time()
 
             # Create a directory for the current download batch if it doesn't already exist
-            MASTER_SAVE_DIR = "./OneNightOfFrames/Batch-" + _get_formatted_est() + "/"
+            MASTER_SAVE_DIR = "./pics/Batch-" + _get_formatted_est() + "/"
 
             print "======STARTING BATCH======"
 
