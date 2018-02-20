@@ -11,7 +11,31 @@ import cv2
 This module is designed to interface with Earthcam cameras and download
 frames via multithreading and save them with their camera IDs and current date-time
 """
+
+def _clean_cams():
+    """
+    Removes dead cameras from camera list
+    """
+    with open('deadCams.txt', 'r') as deadCamFile:
+        deadCamList = deadCamFile.readlines()
+
+    with open('m3u8sMaster.txt', 'r') as masterListFile:
+        masterList = masterListFile.readlines()
+
+    updatedCamList = []
+    
+    for cam in masterList:
+        if cam not in deadCamList:
+            updatedCamList.append(cam)
+
+    with open('m3u8s.txt', 'w') as updatedCamFile:
+        updatedCamFile.writelines(updatedCamList)
+
+
 def _report_dead_cam(m3u8_target):
+    """
+    Writes dead camera links to file to be removed 
+    """
     with open("deadCams.txt", "a") as deadFile:
         deadFile.write(m3u8_target)
 
@@ -128,8 +152,8 @@ def download_stream_time(m3u8_target, save_path, runtime_sec=5, save_img_type="p
 
     return failure_cnt
 
+def get_single_batch(MAX_BAtCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH):
 
-if __name__ == "__main__":
     """
     Downloads frames from m3u8s.txt via multithreading
     One thread per camera
@@ -139,43 +163,49 @@ if __name__ == "__main__":
 
     with open("m3u8s.txt") as stream_file:
         
-        EXPERIMENT_END_TIME = time.time() + 60 * 3 # Run for a full 1 hours
-        MAX_BATCH_ALLOWED_TIME = 60 * 1 # 5 minutes per batch, max
-        FRAMES_PER_CAM_PER_BATCH = 15
-
-        while time.time() < EXPERIMENT_END_TIME:
             
-            CURR_BATCH_START_TIME = time.time()
+        CURR_BATCH_START_TIME = time.time()
 
-            # Create a directory for the current download batch if it doesn't already exist
-            MASTER_SAVE_DIR = "./pics/Batch-" + _get_formatted_est() + "/"
+        # Create a directory for the current download batch if it doesn't already exist
+        MASTER_SAVE_DIR = "./pics/Batch-" + _get_formatted_est() + "/"
 
-            print "======STARTING BATCH======"
+        print "======STARTING BATCH======"
 
-            for stream_link in stream_file:
-                cam_save_dir = MASTER_SAVE_DIR + "Cam-" + _get_earthcam_id(stream_link) + "/"
+        for stream_link in stream_file:
+            cam_save_dir = MASTER_SAVE_DIR + "Cam-" + _get_earthcam_id(stream_link) + "/"
+            # Create a directory for the current cam download if it doesn't already exist
+            if not os.path.exists(cam_save_dir):
+                os.makedirs(cam_save_dir)
+               
+            p = multiprocessing.Process(target=download_stream_frames,
+                                        args=(stream_link, cam_save_dir, FRAMES_PER_CAM_PER_BATCH))
+            STREAM_DOWNLOADERS.append(p)
+            p.start()
 
-                # Create a directory for the current cam download if it doesn't already exist
-                if not os.path.exists(cam_save_dir):
-                    os.makedirs(cam_save_dir)
-                
-                p = multiprocessing.Process(target=download_stream_frames,
-                                            args=(stream_link, cam_save_dir, FRAMES_PER_CAM_PER_BATCH))
-                STREAM_DOWNLOADERS.append(p)
-                p.start()
+        # Every 5 seconds, check if it's time to start a new batch
+        while STREAM_DOWNLOADERS is not False: # While not empty
+            STREAM_DOWNLOADERS = [p for p in STREAM_DOWNLOADERS if p.is_alive()]
+            # Terminate early if it takes too long to finish the batch
+            if time.time() >= (CURR_BATCH_START_TIME + MAX_BATCH_ALLOWED_TIME):
+                for p in STREAM_DOWNLOADERS:
+                    p.terminate()
+                    p.join()
+                print "======Prematurely terminated batch======"
+                break
+            else:
+                time.sleep(5)
 
-            # Every 5 seconds, check if it's time to start a new batch
-            while STREAM_DOWNLOADERS is not False: # While not empty
-                STREAM_DOWNLOADERS = [p for p in STREAM_DOWNLOADERS if p.is_alive()]
+if __name__ == "__main__":
+    """
+    Downloads frames from m3u8s.txt via multithreading
+    One thread per camera
+    """    
+    EXPERIMENT_END_TIME = time.time() + 60 * 3 # Run for a full 1 hours
+    MAX_BATCH_ALLOWED_TIME = 60 * 1 # 1 minutes per batch, max
+    FRAMES_PER_CAM_PER_BATCH = 10
 
-                # Terminate early if it takes too long to finish the batch
-                if time.time() >= (CURR_BATCH_START_TIME + MAX_BATCH_ALLOWED_TIME):
-                    for p in STREAM_DOWNLOADERS:
-                        p.terminate()
-                        p.join()
-                    print "======Prematurely terminated batch======"
-                    break
-                else:
-                    time.sleep(5)
-
+    while time.time() < EXPERIMENT_END_TIME:
+        get_single_batch(MAX_BATCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH)        
+        
+    _clean_cams()
     print "======EXPERIMENT DONE======"
