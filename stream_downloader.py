@@ -36,8 +36,11 @@ def _report_dead_cam(m3u8_target):
     """
     Writes dead camera links to file to be removed 
     """
+    with open("deadCams.txt", "r") as deadFile:
+        deadCamList = deadFile.readlines()
     with open("deadCams.txt", "a") as deadFile:
-        deadFile.write(m3u8_target)
+        if m3u8_target not in deadCamList:
+            deadFile.write(m3u8_target)
 
 def _get_formatted_est():
     """
@@ -200,8 +203,8 @@ if __name__ == "__main__":
     Downloads frames from m3u8s.txt via multithreading
     One thread per camera
     """    
-    EXPERIMENT_END_TIME = time.time() + 60 * 3 # Run for a full 1 hours
-    MAX_BATCH_ALLOWED_TIME = 60 * 1 # 1 minutes per batch, max
+    EXPERIMENT_END_TIME = time.time() + 60 * 5 # Run for a full 1 hours
+    MAX_BATCH_ALLOWED_TIME = 60 * 0.5 # 1 minutes per batch, max
     FRAMES_PER_CAM_PER_BATCH = 10
 
     while time.time() < EXPERIMENT_END_TIME:
