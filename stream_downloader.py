@@ -64,7 +64,7 @@ def _get_earthcam_id(m3u8_target):
     return cam_id
 
 
-def download_stream_frames(m3u8_target, save_path, num_frames=1, save_img_type="png"):
+def download_stream_frames(m3u8_target, save_path, num_frames=1, save_img_type="jpg"):
     """
     Worker function that downloads a specified number of frames from a target stream.
     WORKS FOR EARTHCAM STREAMS ONLY.
@@ -77,18 +77,19 @@ def download_stream_frames(m3u8_target, save_path, num_frames=1, save_img_type="
 
         num_frames: (int) Default 1. The desired number of frames to download from the camera.
 
-        save_img_type: (str) Default 'png'. The target image save format.
+        save_img_type: (str) Default 'jpg'. The target image save format.
     """
 
     cam = cv2.VideoCapture(m3u8_target)
 
     failure_cnt = 0  # The number of total frame grab failures
     is_got_one_successfully = False
-
+    i = 0
     for _i in range(num_frames):
         is_success, frame = cam.read()
         filename = _get_earthcam_id(m3u8_target) + "--" + _get_formatted_est() + \
-                        "." + save_img_type
+                        str(i) + "." + save_img_type
+        i += 1
 
         if is_success:
             save_target = save_path + filename
@@ -110,7 +111,7 @@ def download_stream_frames(m3u8_target, save_path, num_frames=1, save_img_type="
     return failure_cnt
 
 
-def download_stream_time(m3u8_target, save_path, runtime_sec=5, save_img_type="png"):
+def download_stream_time(m3u8_target, save_path, runtime_sec=5, save_img_type="jpg"):
     """
     Worker function that downloads a specified number of frames from a target stream.
     WORKS FOR EARTHCAM STREAMS ONLY.
@@ -123,7 +124,7 @@ def download_stream_time(m3u8_target, save_path, runtime_sec=5, save_img_type="p
 
         runtime_sec: (int) Default 5. The desired number of seconds to run the downloader for.
 
-        save_img_type: (str) Default 'png'. The target image save format.
+        save_img_type: (str) Default 'jpg'. The target image save format.
     """
     cam = cv2.VideoCapture(m3u8_target)
 
@@ -209,6 +210,6 @@ if __name__ == "__main__":
 
     while time.time() < EXPERIMENT_END_TIME:
         get_single_batch(MAX_BATCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH)        
-        
-    _clean_cams()
+        _clean_cams()        
+    
     print "======EXPERIMENT DONE======"
