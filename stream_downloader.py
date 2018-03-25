@@ -84,12 +84,12 @@ def download_stream_frames(m3u8_target, save_path, num_frames=1, save_img_type="
 
     failure_cnt = 0  # The number of total frame grab failures
     is_got_one_successfully = False
-    i = 0
+    count = 0
     for _i in range(num_frames):
         is_success, frame = cam.read()
         filename = _get_earthcam_id(m3u8_target) + "--" + _get_formatted_est() + \
-                        str(i) + "." + save_img_type
-        i += 1
+                        str(count) + "." + save_img_type
+        count += 1
 
         if is_success:
             save_target = save_path + filename
