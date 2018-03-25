@@ -89,12 +89,12 @@ def download_stream_frames(m3u8_target, save_path, num_frames=1, save_img_type="
         is_success, frame = cam.read()
         filename = _get_earthcam_id(m3u8_target) + "--" + _get_formatted_est() + \
                         str(count) + "." + save_img_type
-        count += 1
 
         if is_success:
             save_target = save_path + filename
             cv2.imwrite(save_target, frame)
             is_got_one_successfully = True
+            count += 1
         else:
             failure_cnt += 1
             print "FAILURE: " + filename + ", FAILED " + str(failure_cnt)
