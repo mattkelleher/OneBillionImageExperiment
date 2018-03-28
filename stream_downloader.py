@@ -88,13 +88,13 @@ def download_stream_frames(m3u8_target, save_path, num_frames=1, save_img_type="
     for _i in range(num_frames):
         is_success, frame = cam.read()
         filename = _get_earthcam_id(m3u8_target) + "--" + _get_formatted_est() + \
-                        str(count) + "." + save_img_type
+                      "_" +  str(count) + "." + save_img_type
 
         if is_success:
             save_target = save_path + filename
             cv2.imwrite(save_target, frame)
             is_got_one_successfully = True
-            count += 1
+            count  = (count + 1) % 1000
         else:
             failure_cnt += 1
             print "FAILURE: " + filename + ", FAILED " + str(failure_cnt)
@@ -171,7 +171,7 @@ def get_single_batch(MAX_BAtCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH):
         CURR_BATCH_START_TIME = time.time()
 
         # Create a directory for the current download batch if it doesn't already exist
-        MASTER_SAVE_DIR = "./pics/Batch-" + _get_formatted_est() + "/"
+        MASTER_SAVE_DIR = "./pics/Batch-" + _get_formatted_est() + "/"  #TODO Set MASTER_SAVE_DIR
 
         print "======STARTING BATCH======"
 
@@ -204,12 +204,21 @@ if __name__ == "__main__":
     Downloads frames from m3u8s.txt via multithreading
     One thread per camera
     """    
-    EXPERIMENT_END_TIME = time.time() + 60 * 5 # Run for a full 1 hours
-    MAX_BATCH_ALLOWED_TIME = 60 * 0.5 # 1 minutes per batch, max
-    FRAMES_PER_CAM_PER_BATCH = 10
-
+    EXPERIMENT_END_TIME = time.time() + 60 * 5 #TODO Set experiment run time
+    MAX_BATCH_ALLOWED_TIME = 60 * 0.5 #TODO Set max time per patch
+    FRAMES_PER_CAM_PER_BATCH = 15     #TODO Set max frames per batch
+    hours_remaining = (EXPERIMENT_END_TIME - time.time()) // (60)
+    print hours_remaining
     while time.time() < EXPERIMENT_END_TIME:
         get_single_batch(MAX_BATCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH)        
-        _clean_cams()        
+        _clean_cams()
+        if((EXPERIMENT_END_TIME - time.time()) // (60)  != hours_remaining):
+            hours_remaining =  hours_remaining - 1
+            print hours_remaining
+            with open("m3u8sMaster.txt", "r") as master:
+                masterList = master.readlines()
+            with open("m3u8s.txt", "w") as working:
+                working.writelines(masterList)
+
     
     print "======EXPERIMENT DONE======"
