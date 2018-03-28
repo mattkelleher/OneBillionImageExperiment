@@ -207,7 +207,7 @@ if __name__ == "__main__":
     EXPERIMENT_END_TIME = time.time() + 60 * 5 #TODO Set experiment run time
     MAX_BATCH_ALLOWED_TIME = 60 * 0.5 #TODO Set max time per patch
     FRAMES_PER_CAM_PER_BATCH = 15     #TODO Set max frames per batch
-    hours_remaining = (EXPERIMENT_END_TIME - time.time()) // (60)
+    hours_remaining = (EXPERIMENT_END_TIME - time.time()) // (60 * 60)
     print hours_remaining
     while time.time() < EXPERIMENT_END_TIME:
         get_single_batch(MAX_BATCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH)        
