@@ -212,8 +212,8 @@ if __name__ == "__main__":
     while time.time() < EXPERIMENT_END_TIME:
         get_single_batch(MAX_BATCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH)        
         _clean_cams()
-        if((EXPERIMENT_END_TIME - time.time()) // (60)  != hours_remaining):
-            hours_remaining =  hours_remaining - 1
+        if((EXPERIMENT_END_TIME - time.time()) // (60 * 60 * 2)  != hours_remaining):
+            hours_remaining =  hours_remaining - 2
             print hours_remaining
             with open("m3u8sMaster.txt", "r") as master:
                 masterList = master.readlines()
