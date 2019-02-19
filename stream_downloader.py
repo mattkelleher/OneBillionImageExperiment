@@ -165,7 +165,7 @@ def get_single_batch(MAX_BAtCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH):
 
     STREAM_DOWNLOADERS = []
 
-    with open("m3u8s.txt") as stream_file:
+    with open("m3u8s_interesting.txt") as stream_file:  #TODO camera file list
         
             
         CURR_BATCH_START_TIME = time.time()
@@ -204,9 +204,9 @@ if __name__ == "__main__":
     Downloads frames from m3u8s.txt via multithreading
     One thread per camera
     """    
-    EXPERIMENT_END_TIME = time.time() + 60 * 5 #TODO Set experiment run time
-    MAX_BATCH_ALLOWED_TIME = 60 * 0.5 #TODO Set max time per patch
-    FRAMES_PER_CAM_PER_BATCH = 15     #TODO Set max frames per batch
+    EXPERIMENT_END_TIME = time.time() + 60 * 12 #TODO Set experiment run time (minutes)
+    MAX_BATCH_ALLOWED_TIME = 1 #TODO Set max time per patch (minutes)
+    FRAMES_PER_CAM_PER_BATCH = 10000     #TODO Set max frames per batch (minutes)
     hours_remaining = (EXPERIMENT_END_TIME - time.time()) // (60 * 60)
     print hours_remaining
     while time.time() < EXPERIMENT_END_TIME:

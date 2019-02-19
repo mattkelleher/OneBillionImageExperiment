@@ -1,0 +1,15 @@
+http://video3.earthcam.com/fecnetwork/5751.flv/playlist.m3u8
+http://video3.earthcam.com/fecnetwork/5775.flv/playlist.m3u8
+http://video3.earthcam.com/fecnetwork/6427.flv/playlist.m3u8
+http://video3.earthcam.com/fecnetwork/6593.flv/playlist.m3u8
+http://video3.earthcam.com/fecnetwork/6603.flv/playlist.m3u8
+http://video3.earthcam.com/fecnetwork/6698.flv/playlist.m3u8
+http://video3.earthcam.com/fecnetwork/6975.flv/playlist.m3u8
+http://video3.earthcam.com/fecnetwork/7571.flv/playlist.m3u8
+http://video3.earthcam.com/fecnetwork/8174.flv/playlist.m3u8
+http://video3.earthcam.com/fecnetwork/8470.flv/playlist.m3u8
+http://video3.earthcam.com/fecnetwork/8471.flv/playlist.m3u8
+http://video3.earthcam.com/fecnetwork/8584.flv/playlist.m3u8
+http://video3.earthcam.com/fecnetwork/8763.flv/playlist.m3us
+http://video3.earthcam.com/fecnetwork/10294.flv/playlist.m3u8
+http://video3.earthcam.com/fecnetwork/10669.flv/playlist.m3u8
