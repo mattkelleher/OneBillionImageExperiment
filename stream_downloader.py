@@ -211,7 +211,7 @@ if __name__ == "__main__":
     print hours_remaining
     while time.time() < EXPERIMENT_END_TIME:
         get_single_batch(MAX_BATCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH)
-		time.sleep(60* 5)
+	time.sleep(60* 5)
         """ 
 		_clean_cams()
         if((EXPERIMENT_END_TIME - time.time()) // (60 * 60 * 2)  != hours_remaining):
