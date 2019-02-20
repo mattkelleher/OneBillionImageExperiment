@@ -156,7 +156,7 @@ def download_stream_time(m3u8_target, save_path, runtime_sec=5, save_img_type="j
 
     return failure_cnt
 
-def get_single_batch(MAX_BAtCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH):
+def get_single_batch(MAX_BATCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH):
 
     """
     Downloads frames from m3u8s.txt via multithreading
@@ -171,7 +171,7 @@ def get_single_batch(MAX_BAtCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH):
         CURR_BATCH_START_TIME = time.time()
 
         # Create a directory for the current download batch if it doesn't already exist
-        MASTER_SAVE_DIR = "./pics/Batch-" + _get_formatted_est() + "/"  #TODO Set MASTER_SAVE_DIR
+        MASTER_SAVE_DIR = "/local/b/cam2/data/1BillionDataset/12HourTest" + _get_formatted_est() + "/"  #TODO Set MASTER_SAVE_DIR
 
         print "======STARTING BATCH======"
 
@@ -204,14 +204,16 @@ if __name__ == "__main__":
     Downloads frames from m3u8s.txt via multithreading
     One thread per camera
     """    
-    EXPERIMENT_END_TIME = time.time() + 60 * 12 #TODO Set experiment run time (minutes)
-    MAX_BATCH_ALLOWED_TIME = 1 #TODO Set max time per patch (minutes)
-    FRAMES_PER_CAM_PER_BATCH = 10000     #TODO Set max frames per batch (minutes)
+    EXPERIMENT_END_TIME = time.time() + 60 * 60 * 24 #TODO Set experiment run time (seconds)
+    MAX_BATCH_ALLOWED_TIME = 60 #TODO Set max time per patch (seconds)
+    FRAMES_PER_CAM_PER_BATCH = 100000     #TODO Set max frames per batch 
     hours_remaining = (EXPERIMENT_END_TIME - time.time()) // (60 * 60)
     print hours_remaining
     while time.time() < EXPERIMENT_END_TIME:
-        get_single_batch(MAX_BATCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH)        
-        _clean_cams()
+        get_single_batch(MAX_BATCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH)
+		time.sleep(60* 5)
+        """ 
+		_clean_cams()
         if((EXPERIMENT_END_TIME - time.time()) // (60 * 60 * 2)  != hours_remaining):
             hours_remaining =  hours_remaining - 2
             print hours_remaining
@@ -219,6 +221,6 @@ if __name__ == "__main__":
                 masterList = master.readlines()
             with open("m3u8s.txt", "w") as working:
                 working.writelines(masterList)
-
+		"""
     
     print "======EXPERIMENT DONE======"
