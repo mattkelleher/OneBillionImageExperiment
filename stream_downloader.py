@@ -61,9 +61,6 @@ def _get_earthcam_id(m3u8_target):
     """
     prefix = "http://video3.earthcam.com/fecnetwork/"
     suffix = ".flv/playlist.m3u8"
-	print(m3u8_target)
-	print(len(prefix))
-	print(m3u8.target.index(suffix))
     cam_id = m3u8_target[len(prefix):m3u8_target.index(suffix)]
 
     return cam_id
