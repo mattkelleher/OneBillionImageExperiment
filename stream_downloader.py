@@ -1,3 +1,5 @@
+import sys
+sys.path.append('/opt/python/2.7.10/')
 import multiprocessing
 import os
 import time
@@ -97,13 +99,13 @@ def download_stream_frames(m3u8_target, save_path, num_frames=1, save_img_type="
             count  = (count + 1) % 1000
         else:
             failure_cnt += 1
-            print "FAILURE: " + filename + ", FAILED " + str(failure_cnt)
+            print("FAILURE: " + filename + ", FAILED " + str(failure_cnt))
 
             if failure_cnt >= 5:
                 if is_got_one_successfully: # Camera might work
-                    print "||||||" + _get_earthcam_id(m3u8_target) + "||||||"
+                    print( "||||||" + _get_earthcam_id(m3u8_target) + "||||||")
                 else: # Camera dead
-                    print "******" + _get_earthcam_id(m3u8_target) + "******"
+                    print( "******" + _get_earthcam_id(m3u8_target) + "******")
                     _report_dead_cam(m3u8_target)
                 break
     cam.release()
@@ -144,13 +146,13 @@ def download_stream_time(m3u8_target, save_path, runtime_sec=5, save_img_type="j
             is_got_one_successfully = True
         else:
             failure_cnt += 1
-            print "FAILURE: " + filename + ", FAILED " + str(failure_cnt)
+            print( "FAILURE: " + filename + ", FAILED " + str(failure_cnt))
 
             if failure_cnt >= 5:
                 if is_got_one_successfully: # Camera seems to work sometimes
-                    print "||||||" + _get_earthcam_id(m3u8_target) + "||||||"
+                    print("||||||" + _get_earthcam_id(m3u8_target) + "||||||")
                 else: # Camera dead
-                    print "******" + _get_earthcam_id(m3u8_target) + "******"
+                    print("******" + _get_earthcam_id(m3u8_target) + "******")
                 break
     cam.release()
 
@@ -173,7 +175,7 @@ def get_single_batch(MAX_BATCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH):
         # Create a directory for the current download batch if it doesn't already exist
         MASTER_SAVE_DIR = "/media/kellehem/3419-1A87/1BIE/24HourTest/"  #TODO Set MASTER_SAVE_DIR
 
-        print "======STARTING BATCH======"
+        print("======STARTING BATCH======")
 
         for stream_link in stream_file:
             cam_save_dir = MASTER_SAVE_DIR + "Cam-" + _get_earthcam_id(stream_link) + "/" + _get_formatted_est() + "/"
@@ -194,7 +196,7 @@ def get_single_batch(MAX_BATCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH):
                 for p in STREAM_DOWNLOADERS:
                     p.terminate()
                     p.join()
-                print "======Prematurely terminated batch======"
+                print("======Prematurely terminated batch======")
                 break
             else:
                 time.sleep(5)
@@ -208,7 +210,7 @@ if __name__ == "__main__":
     MAX_BATCH_ALLOWED_TIME = 60 #TODO Set max time per patch (seconds)
     FRAMES_PER_CAM_PER_BATCH = 100000     #TODO Set max frames per batch 
     hours_remaining = (EXPERIMENT_END_TIME - time.time()) // (60 * 60)
-    print hours_remaining
+    print(hours_remaining)
     while time.time() < EXPERIMENT_END_TIME:
         get_single_batch(MAX_BATCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH)
 	time.sleep(60* 60)
@@ -221,6 +223,6 @@ if __name__ == "__main__":
                 masterList = master.readlines()
             with open("m3u8s.txt", "w") as working:
                 working.writelines(masterList)
-		"""
+	"""
     
-    print "======EXPERIMENT DONE======"
+    print("======EXPERIMENT DONE======")
