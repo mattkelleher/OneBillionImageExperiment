@@ -171,12 +171,12 @@ def get_single_batch(MAX_BATCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH):
         CURR_BATCH_START_TIME = time.time()
 
         # Create a directory for the current download batch if it doesn't already exist
-        MASTER_SAVE_DIR = "/local/b/cam2/data/1BillionDataset/12HourTest" + _get_formatted_est() + "/"  #TODO Set MASTER_SAVE_DIR
+        MASTER_SAVE_DIR = "/media/kellehem/3419-1A87/1BIE/24HourTest/"  #TODO Set MASTER_SAVE_DIR
 
         print "======STARTING BATCH======"
 
         for stream_link in stream_file:
-            cam_save_dir = MASTER_SAVE_DIR + "Cam-" + _get_earthcam_id(stream_link) + "/"
+            cam_save_dir = MASTER_SAVE_DIR + "Cam-" + _get_earthcam_id(stream_link) + "/" + _get_formatted_est() + "/"
             # Create a directory for the current cam download if it doesn't already exist
             if not os.path.exists(cam_save_dir):
                 os.makedirs(cam_save_dir)
@@ -211,7 +211,7 @@ if __name__ == "__main__":
     print hours_remaining
     while time.time() < EXPERIMENT_END_TIME:
         get_single_batch(MAX_BATCH_ALLOWED_TIME, FRAMES_PER_CAM_PER_BATCH)
-	time.sleep(60* 5)
+	time.sleep(60* 60)
         """ 
 		_clean_cams()
         if((EXPERIMENT_END_TIME - time.time()) // (60 * 60 * 2)  != hours_remaining):
